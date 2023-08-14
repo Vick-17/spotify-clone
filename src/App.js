@@ -3,9 +3,9 @@ import React, { useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useStateValue } from "./StateProvider"; // Import du StateProvider qui gère l'état global de l'application
 import Player from "./Player"; // Import du composant Player qui sera affiché lorsque l'utilisateur est connecté
-import { getTokenFromResponce } from "./spotify"; // Import d'une fonction pour extraire le token d'accès depuis la réponse Spotify
+import { getTokenFromResponse } from "./spotify"; // Import d'une fonction pour extraire le token d'accès depuis la réponse Spotify
 import "./App.css"; // Import des styles CSS
-import Login from "./login"; // Import du composant Login pour l'écran de connexion
+import Login from "./Login"; // Import du composant Login pour l'écran de connexion
 
 // Création d'une instance de SpotifyWebApi
 const s = new SpotifyWebApi();
@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     // Extraction du token d'accès depuis la réponse Spotify
-    const hash = getTokenFromResponce();
+    const hash = getTokenFromResponse();
     window.location.hash = "";
 
     let _token = hash.access_token;
@@ -25,6 +25,14 @@ function App() {
       // Configuration de l'instance SpotifyWebApi avec le token d'accès
       s.setAccessToken(_token);
 
+      // Récupération des playlists de l'utilisateur et mise à jour de l'état global
+      s.getUserPlaylists({ limit: 50 }).then((response) =>
+        dispatch({
+          type: "SET_USER_PLAYLIST",
+          userPlaylist: response,
+        })
+      );
+
       // Mise à jour de l'état global avec le token d'accès
       dispatch({
         type: "SET_TOKEN",
@@ -32,7 +40,7 @@ function App() {
       });
 
       // Récupération de la playlist "Discover Weekly" et mise à jour de l'état global
-      s.getPlaylist("37i9dQZEVXcJZyENOWUFo7").then((response) =>
+      s.getPlaylist("0QThHRzwSSluaSW9Dd09bG").then((response) =>
         dispatch({
           type: "SET_DISCOVER_WEEKLY",
           discover_weekly: response,
@@ -40,7 +48,7 @@ function App() {
       );
 
       // Récupération des artistes préférés de l'utilisateur et mise à jour de l'état global
-      s.setMyTopArtists().then((response) =>
+      s.getMyTopArtists().then((response) =>
         dispatch({
           type: "SET_TOP_ARTISTS",
           top_artists: response,
@@ -62,7 +70,7 @@ function App() {
       });
 
       // Récupération des playlists de l'utilisateur et mise à jour de l'état global
-      s.getUserPlaytlists().then((playlist) => {
+      s.getUserPlaylists().then((playlist) => {
         dispatch({
           type: "SET_PLAYLIST",
           playlist,

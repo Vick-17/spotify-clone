@@ -4,12 +4,12 @@
   margin-bottom: 30px;
 }
 
-.header_right {
+.header__right {
   display: flex;
   align-items: center;
 }
 
-.header_left {
+.header__left {
   flex: 0.5;
   display: flex;
   background-color: white;
@@ -19,11 +19,11 @@
   align-items: center;
 }
 
-.header_left > input {
+.header__left > input {
   border: none;
   width: 100%;
 }
 
-.header_right > h4 {
+.header__right > h4 {
   margin-left: 10px;
 }
